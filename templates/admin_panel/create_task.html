@@ -1,0 +1,66 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+
+<style>
+    .page-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .form-card {
+        background-color: #ffffff;
+        padding: 20px;
+        width: 600px;
+        border-radius: 6px;
+        box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    .form-card h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+    }
+
+    .form-card form p {
+        margin-bottom: 15px;
+    }
+
+    .form-card input,
+    .form-card textarea,
+    .form-card select {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    .form-card button {
+        background-color: #3f3f3f;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    .form-card button:hover {
+        background-color: #2e2e2e;
+    }
+</style>
+
+<div class="page-wrapper">
+    <div class="form-card">
+        <h2>Create Task</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Task</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

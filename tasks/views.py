@@ -25,3 +25,15 @@ class TaskReportView(generics.RetrieveAPIView):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated, IsAdminOrSuperAdmin]
     queryset = Task.objects.filter(status='COMPLETED')
+
+    def get_object(self):
+        task = super().get_object()
+
+        if self.request.user.is_superuser:
+            return task
+
+        if task.assigned_by != self.request.user:
+            raise PermissionDenied("Not allowed to view this report")
+
+        return task
+

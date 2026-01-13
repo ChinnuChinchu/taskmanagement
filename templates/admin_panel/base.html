@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html>
 <head>
     <title>Admin Panel</title>
@@ -30,6 +30,83 @@
 <hr>
 
 {% block content %}{% endblock %}
+
+</body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Header / Navbar */
+        nav {
+            background-color: #3f3f3f;   /* dark gray */
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        nav form {
+            margin-left: auto; /* pushes logout to right */
+        }
+
+        nav button {
+            background-color: #d9534f;  /* soft red */
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        nav button:hover {
+            background-color: #c9302c;
+        }
+
+        /* Page content */
+        .container {
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a href="/panel/">Dashboard</a>
+    <a href="/panel/users/">Users</a>
+    <a href="/panel/admins/">Admins</a>
+    <a href="/panel/tasks/">Tasks</a>
+    <a href="/panel/reports/">Reports</a>
+
+    <form method="post" action="/logout/">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+</nav>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
 
 </body>
 </html>

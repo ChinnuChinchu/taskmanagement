@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from accounts.models import User
 from tasks.models import Task
-from .decorators import admin_required
+from .decorators import admin_required,PermissionDenied
+from tasks.forms import TaskCreateForm
+from django.shortcuts import redirect
 
 @admin_required
 def dashboard(request):
@@ -23,16 +25,60 @@ def admins(request):
         'admins': User.objects.filter(role='ADMIN')
     })
 
+
+
 @admin_required
 def tasks(request):
-    qs = Task.objects.all()
-    if request.user.role == 'ADMIN':
-        qs = qs.filter(assigned_to__assigned_admin=request.user)
+    user = request.user
+
+    if user.is_superuser:
+        qs = Task.objects.all()
+
+    elif user.role == 'ADMIN':
+        qs = Task.objects.filter(assigned_by=user)
+
+    else:
+        raise PermissionDenied
+
     return render(request, 'admin_panel/tasks.html', {'tasks': qs})
+
+
+
 
 @admin_required
 def reports(request):
-    qs = Task.objects.filter(status='COMPLETED')
-    if request.user.role == 'ADMIN':
-        qs = qs.filter(assigned_to__assigned_admin=request.user)
-    return render(request, 'admin_panel/task_reports.html', {'tasks': qs})
+    user = request.user
+
+    if user.is_superuser:
+        qs = Task.objects.filter(status='COMPLETED')
+
+    elif user.role == 'ADMIN':
+        qs = Task.objects.filter(
+            status='COMPLETED',
+            assigned_by=user
+        )
+
+    else:
+        raise PermissionDenied
+
+    return render(request, 'admin_panel/task_reports.html', {
+        'tasks': qs
+    })
+
+
+
+@admin_required
+def create_task(request):
+    if request.method == 'POST':
+        form = TaskCreateForm(request.POST, admin=request.user)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.assigned_by = request.user
+            task.save()
+            return redirect('/panel/tasks/')
+    else:
+        form = TaskCreateForm(admin=request.user)
+
+    return render(request, 'admin_panel/create_task.html', {
+        'form': form
+    })
