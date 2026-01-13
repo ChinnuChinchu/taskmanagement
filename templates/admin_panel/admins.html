@@ -1,0 +1,22 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block content %}
+<h1>Admins</h1>
+
+<table border="1">
+<tr>
+    <th>Username</th>
+    <th>Email</th>
+</tr>
+
+{% for admin in admins %}
+<tr>
+    <td>{{ admin.username }}</td>
+    <td>{{ admin.email }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="2">No admins</td></tr>
+{% endfor %}
+</table>
+
+{% endblock %}

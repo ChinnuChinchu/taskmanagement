@@ -1,0 +1,27 @@
+from rest_framework import generics, permissions
+from rest_framework.exceptions import PermissionDenied
+from .models import Task
+from .serializers import TaskSerializer
+from .permissions import IsAssignedUser, IsAdminOrSuperAdmin
+
+class UserTaskListView(generics.ListAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(assigned_to=self.request.user)
+
+class UserTaskUpdateView(generics.UpdateAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAssignedUser]
+    queryset = Task.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
+
+
+class TaskReportView(generics.RetrieveAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdminOrSuperAdmin]
+    queryset = Task.objects.filter(status='COMPLETED')

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <style>
+        nav a, nav button { 
+            margin-right: 15px; 
+        }
+        nav form {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/panel/">Dashboard</a>
+    <a href="/panel/users/">Users</a>
+    <a href="/panel/admins/">Admins</a>
+    <a href="/panel/tasks/">Tasks</a>
+    <a href="/panel/reports/">Reports</a>
+
+    <form method="post" action="/logout/" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+</nav>
+
+<hr>
+
+{% block content %}{% endblock %}
+
+</body>
+</html>
